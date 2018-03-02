@@ -494,7 +494,7 @@ accoucheuse
 account
 accountability
 accountable
-accountable(p)
+accountable
 accountableness
 accountancy
 accountant
@@ -704,7 +704,7 @@ acoustics
 acquaint
 acquaintance
 acquainted
-acquainted(p)
+acquainted
 acquaintenace
 acquaintend
 acquainting
@@ -797,7 +797,7 @@ actifed
 actin
 actinal
 acting
-acting(a)
+acting
 actinia
 actiniaria
 actinic
@@ -831,7 +831,7 @@ actions
 actitis
 actium
 activated
-activating(a)
+activating
 activation
 activator
 active
@@ -69775,7 +69775,7 @@ zephyr
 zephyrs
 zeppelin
 zero
-zero(a)
+zero
 zerronnen
 zest
 zestful

@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include <conio.h>
+//#include <conio.h>
 #include <time.h>
 
 #define ARRAY_SIZE(a) sizeof(a)/sizeof(a[0])
@@ -36,7 +36,7 @@ bool puts_words(char * string, ELEM *board, int pos);
 void mark_territory(int pos, char dir, char len, struct TrieNode *root,ELEM *board, int player);
 
 
-struct TrieNode *getNode(void)
+struct TrieNode *getNode()
 {
     struct TrieNode *pNode = NULL;
 
@@ -181,7 +181,7 @@ void generate_words(struct TrieNode * root, char s[])
 
 // BOARD FUNCTIONS AND INTERFACE
 
-// Initializes the board with(*-letter, 0-isWord,0-isTerr) 
+// Initializes the all the cells in the board with(*-letter, 0-isWord,0-isTerr) 
 ELEM* init_board()
 {
 	ELEM * board = (ELEM *)malloc(sizeof(ELEM)*10*10);
@@ -191,15 +191,8 @@ ELEM* init_board()
 		for(int j = 0; j < 10; j++)
 		{
 			(board+(10*i+j)*sizeof(ELEM))->letter = '*';
-			
-			//printf("%c", (board+(10*i+j)*sizeof(ELEM))->letter);
-			(board+(10*i+j)*sizeof(ELEM))->isWord = 0; // I dont know whether this is neccesary
-			//if(i == 0)
-				//(board+(10*i+j)*sizeof(ELEM))->isTerr = 1;
-			//else if(i==9)
-				//(board+(10*i+j)*sizeof(ELEM))->isTerr = 2;
-			//else
-				(board+(10*i+j)*sizeof(ELEM))->isTerr = 0;
+			(board+(10*i+j)*sizeof(ELEM))->isWord = 0; 
+			(board+(10*i+j)*sizeof(ELEM))->isTerr = 0;
 		}
 	}
 	return board;
@@ -209,104 +202,93 @@ ELEM* init_board()
 	}
 
 }
-//with the given word and the position figures out which orientation fits 
-//to place the words without overlapping another word
+//with the given word and the position func. figures out which orientation fits 
+//to place the words without overlapping with other words and then returns a charcter array of possible orientations
 char * possible_orient(char *string, ELEM *board, int pos,char *orient)
 {
 	int length = 0;
 	int k =0;
-	//printf("\t %s", orient);
 	while(*(string+length*sizeof(char))!='\0')
 	{
 		length+=1;
 	}
-	//printf(" %d\n",length);
-	//printf("%s",string);
 	int flag;
-	
-	if((pos - (pos%10))/10 + 1 >= length)
+	if((pos - (pos%10))/10 + 1 >= length)			//enter NORTH
 	{
-		
-		//enter NORTH
-		//printf("north");
 		flag = 1;
 		int j = 0;
 		for(int i =pos;j<length  && i>0;i -= 10)
 		{
 			j+=1;
-			if((board+(i)*sizeof(ELEM))->isWord==1){
-				//printf("prev");
+			if((board+(i)*sizeof(ELEM))->isWord==1)
+			{
 				flag=0;
-				break;}
+				break;
+			}
 		}
 		if(flag==1)
 		orient[k++]='N';
 	}
 	
-	
-	if(pos%10 + 1 >= length)
+	if(pos%10 + 1 >= length)	//enter WEST
 	{
-		//printf("west");
-		//enter WEST
 		flag = 1;
 		int j =0;
 		for(int i =pos;j<length && i>0 ; i -= 1)
 		{
 			j+=1;
-			if((board+(i)*sizeof(ELEM))->isWord==1){
-				//printf("prev");
+			if((board+(i)*sizeof(ELEM))->isWord==1)
+			{
 				flag=0;
-				break;}
+				break;
+			}
 		}
 		if(flag==1)
 			orient[k++]='W';
 	}
 	
-	if(10 - (pos%10) >=length)
-	{
-		
-		//printf("east");
-		//enter EAST
+	if(10 - (pos%10) >=length)	//enter EAST
+	{		
 		flag = 1;
 		int j =0;
 		for(int i =pos;j<length && i<99 ; i += 1)
 		{
 			j+=1;
-			if((board+(i)*sizeof(ELEM))->isWord==1){
-				//printf("prev");
+			if((board+(i)*sizeof(ELEM))->isWord==1)
+			{
 				flag=0;
-				break;}
+				break;
+			}
 		}
 		if(flag==1)
 			orient[k++] = 'E';
 	}
 	
-	if(10 - (pos - pos%10)/10 >=length)
+	if(10 - (pos - pos%10)/10 >=length)		//enter SOUTH	
 	{
-		
-		//printf("south");
-		//enter SOUTH
 		flag = 1;
 		int j =0;
 		for(int i =pos;j<length && i<99; i += 10)
 		{
 			j+=1;
-			if((board+(i)*sizeof(ELEM))->isWord==1){
-				//printf("prev");
-				flag=0;break;}
+			if((board+(i)*sizeof(ELEM))->isWord==1)
+			{
+				flag=0;
+				break;
+			}
 		}
 		if(flag==1)
 			orient[k++] = 'S';
 		
 		}
 	
-	//strcat(orient,'\0');
+	
 	orient[k++] = '\0';
-	//printf("\t %s", orient);
+
 	return orient;
 }
 
-//given a word-it figures out random position to place it in ,
+//given a word-it figures out random position from possible orientation to place it in ,
 //verifies it and then places it in right orientation
 void place_it_in_board(char * string, ELEM *board)
 {
@@ -421,11 +403,9 @@ void form_board(ELEM* board,struct TrieNode *root)
 			{
 				
 				char word[10];
-				//printf("%s", word);
 				int k = 0;
 				for(int j = 1;line[j]!='\0';j++)
 				{
-				//printf("%c", line[j]);
 				word[k++] = line[j-1];
 				}
 				word[k] = '\0';
@@ -435,9 +415,7 @@ void form_board(ELEM* board,struct TrieNode *root)
 				
 			}
 		}
-		fclose(fp);	
-		//printf("done");
-		
+		fclose(fp);
 	}
 		remove("test.txt");
 		LEN_OF_FILE = 0;
@@ -496,17 +474,16 @@ bool word_check(int pos, char dir, char len, struct TrieNode *root,ELEM *board, 
 			
 		}
 		word[j] = '\0';
-		//printf("%s\n", word);
+
 		printf("%s\n", word);
-		bool success = search(root,word);																	//check search function
-		//success = search(root, );
+		bool success = search(root,word);	
 		if(success == true)
 		{
 			mark_territory( pos, dir, len, root, board, player);
 			printf("true");
 		}
-		else printf("false");																											//if word is there I want to remove the word by putting random letters there and marking the territory
-		//return success;
+		else printf("false");	//if word is there I want to remove the word by putting random letters
+					// there and marking the territory
 		return true;
 }
 //marks the territory by assigning territory to player and randomizing letters there
@@ -679,19 +656,3 @@ void interface(ELEM *board, struct TrieNode *root)
 	else printf("DRAW GAME\n");
 	
 }
-
-
-// Driver
-int main()
-{
-	srand(time(NULL));
-    struct TrieNode *root = getNode();
-    insert_all_nodes(root);
-	ELEM *board = init_board();
-	interface(board, root);
-	}																																														//MAKE the strperms functions write words into a filea at the end of word  ------------done
-																										//Get 10 characters from the 2 players and then pass it to the generate_words function 
-																										//read from the file and call place_it_in_board for random 6 words
-
-																										//DURING THE ROUND
-																										//Then we will play the game
